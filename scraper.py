@@ -1,13 +1,19 @@
-import requests
+import re
 import json
+import requests
 from bs4 import BeautifulSoup
 
-url = "https://www.ceneo.pl/101052360#tab=reviews"
+while "product_id" not in locals():
+    try:
+        product_id = re.search("\d+", input("Enter product ID or URL: ")).group()
+    except AttributeError:
+        print("Please provide a valid ID or URL.")
+
+url = f"https://www.ceneo.pl/{product_id}#tab=reviews"
 all_opinions = []
 
 while(url):
     response = requests.get(url)
-
     page = BeautifulSoup(response.text, "html.parser")
     opinions = page.select("div.js_product-review")
 
@@ -50,5 +56,5 @@ while(url):
     except TypeError:
         url = None
 
-with open("opinions/101052360.json", "w", encoding="UTF-8") as jfile:
+with open(f"opinions/{product_id}.json", "w", encoding="UTF-8") as jfile:
     json.dump(all_opinions, jfile, indent=4, ensure_ascii=False)
