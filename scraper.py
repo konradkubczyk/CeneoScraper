@@ -3,11 +3,12 @@ import json
 import requests
 from bs4 import BeautifulSoup
 
-while "product_id" not in locals():
-    try:
-        product_id = re.search("\d+", input("Enter product ID or URL: ")).group()
-    except AttributeError:
-        print("Please provide a valid ID or URL.")
+try:
+    product_id = re.search("\d+", input("Enter product ID or URL: ")).group()
+    assert(requests.get(f"https://www.ceneo.pl/{product_id}#tab=reviews").ok == True)
+except (AttributeError, AssertionError):
+    print("Please provide a valid ID or URL.")
+    exit()
 
 url = f"https://www.ceneo.pl/{product_id}#tab=reviews"
 all_opinions = []
